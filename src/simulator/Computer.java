@@ -51,28 +51,7 @@ public class Computer {
 	 * Default constructor for Computer. Initializes all values to 0.
 	 */
 	public Computer() {
-		int i;
-		mPC = new BitString();
-		mPC.setValue(0);
-		mIR = new BitString();
-		mIR.setValue(0);
-		mRegisters = new BitString[MAX_REGISTERS];
-		for (i = 0; i < MAX_REGISTERS; i++) {
-			mRegisters[i] = new BitString();
-			mRegisters[i].setValue(0);
-		}
-
-		mInstructions = new BitString[MAX_INSTRUCTIONS];
-		for (i = 0; i < mInstructions.length; i++) { 
-			mInstructions[i] = new BitString();
-			mInstructions[i].setValue(0);
-		}
-		
-		mMemory = new BitString[MAX_MEMORY];
-		for (i = 0; i < MAX_MEMORY; i++) {
-			mMemory[i] = new BitString();
-			mMemory[i].setValue(0);
-		}
+		resetProgram();
 	}
 	 
 	/**
@@ -99,8 +78,40 @@ public class Computer {
 			mInstructions[i] = inst;
 		}
 	}
-	
-	
+
+	public void resetProgram() {
+        int i;
+        mPC = new BitString();
+        mPC.setValue(0);
+        mIR = new BitString();
+        mIR.setValue(0);
+        mRegisters = new BitString[MAX_REGISTERS];
+        for (i = 0; i < MAX_REGISTERS; i++) {
+            mRegisters[i] = new BitString();
+            mRegisters[i].setValue(0);
+        }
+
+        mInstructions = new BitString[MAX_INSTRUCTIONS];
+        for (i = 0; i < mInstructions.length; i++) {
+            mInstructions[i] = new BitString();
+            mInstructions[i].setValue(0);
+        }
+
+        mMemory = new BitString[MAX_MEMORY];
+        for (i = 0; i < MAX_MEMORY; i++) {
+            mMemory[i] = new BitString();
+            mMemory[i].setValue(0);
+        }
+    }
+
+    /**
+     * Gets all current data stored in all registers
+     * @return array of data in the registers
+     */
+	public BitString[] getRegisterContents() {
+	    return mRegisters;
+    }
+
 	/**
 	 * Testing method. Returns the contents of the desired register
 	 * @param n the register number
@@ -118,7 +129,15 @@ public class Computer {
 	public void setRegisterContents(int value, int register) { 
 		mRegisters[register].setValue2sComp(value);
 	}
-	
+
+    /**
+     * Gets all current data stored in memory
+     * @return array of data in memory
+     */
+	public BitString[] getMemoryContents() {
+	    return mMemory;
+    }
+
 	/**
 	 * Testing method. Gets the content at the specified memory address.
 	 * @param n the memory address.

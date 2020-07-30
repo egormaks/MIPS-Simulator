@@ -183,6 +183,17 @@ public class BitString {
 		}
 	}
 
+	public String getHex() {
+		StringBuilder sb = new StringBuilder("0x");
+		for (int i = 0; i < mLength; i += 4) {
+			char[] bits = {mBits[i], mBits[i + 1], mBits[i + 2], mBits[i + 3]};
+			BitString str = new BitString();
+			str.setBits(bits);
+			sb.append(Integer.toHexString(str.getValue2sComp()));
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * Returns a new BitString that is combination of this and the 
 	 * other BitString appended to it. 
