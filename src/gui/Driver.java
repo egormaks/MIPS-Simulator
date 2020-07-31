@@ -48,8 +48,32 @@ public class Driver extends JFrame  {
 		this.dataMemory = new JTable(new String[Computer.MAX_MEMORY][COLUMN_NAMES.length], COLUMN_NAMES);
 		this.regMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
-		for (int i = 0; i < Computer.MAX_REGISTERS; i++) { 
-			regMemory.setValueAt("Reg. " + i, i, 0);
+		for (int i = 0; i < Computer.MAX_REGISTERS; i++) {
+			if (i == 0) {
+				regMemory.setValueAt("$zero ($0)", i, 0);
+			} else if (i == 1) {
+				regMemory.setValueAt("$at ($1)", i, 0);
+			} else if (i == 2 || i == 3) {
+				regMemory.setValueAt("$v" + (i - 2) + " ($" + i + ")", i, 0);
+			} else if (i >= 4 && i <= 7) {
+				regMemory.setValueAt("$a" + (i - 4) + " ($" + i + ")", i, 0);
+			} else if (i >= 8 && i <= 15) {
+				regMemory.setValueAt("$t" + (i - 8) + " ($" + i + ")", i, 0);
+			} else if (i >= 16 && i <= 23) {
+				regMemory.setValueAt("$s" + (i - 16) + " ($" + i + ")", i, 0);
+			} else if (i == 24 || i == 25) {
+				regMemory.setValueAt("$t" + (i - 16) + " ($" + i + ")", i, 0);
+			} else if (i == 26 || i == 27) {
+				regMemory.setValueAt("$k" + (i - 26) + " ($" + i + ")", i, 0);
+			} else if (i == 28) {
+				regMemory.setValueAt("$gp ($28)", i, 0);
+			} else if (i == 29) {
+				regMemory.setValueAt("$sp ($29)", i, 0);
+			} else if (i == 30) {
+				regMemory.setValueAt("$fp ($30)", i, 0);
+			} else {
+				regMemory.setValueAt("$ra ($31)", i, 0);
+			}
 		}
 		
 		for (int i = 0; i < Computer.MAX_MEMORY; i++) {
