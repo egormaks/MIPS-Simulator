@@ -1,7 +1,7 @@
 package simulator;
 /**
  * Computer class comprises of memory, registers, and
- * can execute instructions based on PC and IR 
+ * can executeProgram instructions based on PC and IR
  * @author Egor Maksimenka
  */
 public class Computer {
@@ -46,7 +46,16 @@ public class Computer {
 	private BitString mPC;
 	/** The instruction located at the PC. */
 	private BitString mIR;
-
+	/** Stores the current instruction opcode. Redundant but necessary for simulation
+	 * accuracy.
+	 */
+	private int opCode;
+	/** Stores the register that will be written to for pipeline. */
+	private int registerTarget = -1;
+	/** Stores the memory location that will be written to for pipeline. */
+	private int memoryTarget;
+	/** Stores the value to be written, used for pipeline. */
+	private int writeVal;
 	/**
 	 * Default constructor for Computer. Initializes all values to 0.
 	 */
@@ -61,18 +70,15 @@ public class Computer {
 	 * uninstantiated, or if the array contains instructions of incorrect length
 	 */
 	public void loadProgram(String[] instructions) {
-		if (instructions.length >= MAX_INSTRUCTIONS || instructions.length == 0) { 
+		if (instructions.length >= MAX_INSTRUCTIONS || instructions.length == 0)
 			throw new IllegalArgumentException("Invalid no. of instructions");
-		}
 		int i;
 		for (i = 0; i < instructions.length; i++) {
-			if (instructions[i] == null) { 
+			if (instructions[i] == null)
 				throw new IllegalArgumentException("Invalid program / uninstantiated array");
-			}
 			String str = instructions[i];
-			if (str.length() != INSTRUCTION_LENGTH) { 
+			if (str.length() != INSTRUCTION_LENGTH)
 				throw new IllegalArgumentException("Invalid program.");
-			}
 			BitString inst = new BitString();
 			inst.setBits(str.toCharArray());
 			mInstructions[i] = inst;
@@ -103,128 +109,15 @@ public class Computer {
             mMemory[i].setValue(0);
         }
     }
-
-    /**
-     * Gets all current data stored in all registers
-     * @return array of data in the registers
-     */
-	public BitString[] getRegisterContents() {
-	    return mRegisters;
-    }
-
-	/**
-	 * Testing method. Returns the contents of the desired register
-	 * @param n the register number
-	 * @return the contents of the register
-	 */
-	public int getRegisterContents(int n) { 
-		return mRegisters[n].getValue2sComp();
-	}
-	
-	/**
-	 * Testing method. Sets the content of the specified register to the given value
-	 * @param value the value 
-	 * @param register the register to be modified
-	 */
-	public void setRegisterContents(int value, int register) { 
-		mRegisters[register].setValue2sComp(value);
-	}
-
-    /**
-     * Gets all current data stored in memory
-     * @return array of data in memory
-     */
-	public BitString[] getMemoryContents() {
-	    return mMemory;
-    }
-
-	/**
-	 * Testing method. Gets the content at the specified memory address.
-	 * @param n the memory address.
-	 * @return the stored value
-	 */
-	public int getMemoryContents(int n) { 
-		return mMemory[n].getValue2sComp();
-	}
-	
-	/**
-	 * Testing method. Sets the value of the specified memory address.
-	 * @param val the value to be stored
-	 * @param addr the memory address.
-	 */
-	public void setMemoryContents(int val, int addr) { 
-		mMemory[addr].setValue2sComp(val);
-	}
-
-	/**
-	 * Testing method. Returns the PC
-	 * @return a copy of the PC BitString
-	 */
-	public BitString getPC() {
-		return mPC.copy();
-	}
-	
-	/**
-	 * Testing method. Returns the IR
-	 * @return a copy of the IR BitString
-	 */
-	public BitString getIR() { 
-		return mIR.copy();
-	}
-	
-	/**
-	 * Testing method. Returns the array of instructions.
-	 * @return the BitString array containing the instructions
-	 */
-	public BitString[] getInstructions() { 
-		return mInstructions.clone();
-	}
 	
 	/**
 	 * Executes the provided instructions, starting at 0 and runs until all instructions 
 	 * are executed.
 	 */
-	public void execute() {
-		BitString opCodeStr;
-		int opCode;
-		while (true) {
-			mIR = mInstructions[mPC.getValue() / 4];
-			if (mIR.getValue() == 0) { 
-				System.out.println("Program finished.");
-				break;
-			}
-
-			mPC.setValue(mPC.getValue() + 4);
-			
-			opCodeStr = mIR.getOpCode();
-			opCode = opCodeStr.getValue(); 
-			
-			if (opCode == ADD_AND_JR_OP) { 
-				int func = mIR.getFunct().getValue();
-				if (func == ADD_FUNC) {  
-					executeAdd(false);
-				} else if (func == AND_FUNC) { 
-					executeAnd(false);
-				} else if (func == JR_FUNC) { 
-					executeRegJump(mIR.getRs());
-				} else { 
-					throw new IllegalArgumentException("Undefined function");
-				}
-			} else if (opCode == ADDI_OP) {
-				executeAdd(true);
-			} else if (opCode == ANDI_OP) { 
-				executeAnd(true);
-			} else if (opCode == LW_OP) { 
-				executeLoadWord(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-			} else if (opCode == SW_OP) { 
-				executeStoreWord(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-			} else if (opCode == J_OP) { 
-				executeJump(mIR.getPseudoAddr());
-			} else if (opCode == BEQ_OP) { 
-				executeBeq(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-			}	else {
-				throw new IllegalArgumentException("Undefined opcode");
-			}
+	public void executeProgram() {
+		String operating = "";
+		while (operating != null) {
+			operating = increment();
 		}
 	}
 	
@@ -234,52 +127,78 @@ public class Computer {
 	 * @return null when all instructions are executed, otherwise a generic placeholder string
 	 */
 	public String increment() {
-		BitString opCodeStr;
-		int opCode;
-		
-		mIR = mInstructions[mPC.getValue() / 4];
-		if (mIR.getValue() == 0) { 
+		// IF stage
+		instructionFetch();
+		if (mIR.getValue() == 0)
 			return null;
-		}		
-		
-		mPC.setValue(mPC.getValue() + 4);
+		// ID stage
+		instructionDecode();
+		// EX stage
+		execute();
+		// MEM stage
+		memoryOp();
+		// WB stage
+		writeBack();
+		return "running";
+	}
 
-		
-		opCodeStr = mIR.getOpCode();
-		opCode = opCodeStr.getValue(); 
-		
-		if (opCode == ADD_AND_JR_OP) { 
+	private void instructionFetch() {
+		mIR = mInstructions[mPC.getValue() / 4];
+		mPC.setValue(mPC.getValue() + 4);
+	}
+
+	private void instructionDecode() {
+		BitString opCodeStr = mIR.getOpCode();
+		opCode = opCodeStr.getValue();
+	}
+
+	private void execute() {
+		if (opCode == ADD_AND_JR_OP) {
 			int func = mIR.getFunct().getValue();
-			if (func == ADD_FUNC) {  
+			if (func == ADD_FUNC) {
 				executeAdd(false);
-			} else if (func == AND_FUNC) { 
+			} else if (func == AND_FUNC) {
 				executeAnd(false);
-			} else if (func == JR_FUNC) { 
+			} else if (func == JR_FUNC) {
 				executeRegJump(mIR.getRs());
-			} else { 
+			} else {
 				System.out.println("Undefine function at instruction: ");
 				mIR.display(true);
 				throw new IllegalArgumentException("Undefined function");
-				
+
 			}
 		} else if (opCode == ADDI_OP) {
 			executeAdd(true);
-		} else if (opCode == ANDI_OP) { 
+		} else if (opCode == ANDI_OP) {
 			executeAnd(true);
-		} else if (opCode == LW_OP) { 
+		} else if (opCode == LW_OP) {
 			executeLoadWord(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-		} else if (opCode == SW_OP) { 
+		} else if (opCode == SW_OP) {
 			executeStoreWord(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-		} else if (opCode == J_OP) { 
+		} else if (opCode == J_OP) {
 			executeJump(mIR.getPseudoAddr());
-		} else if (opCode == BEQ_OP) { 
+		} else if (opCode == BEQ_OP) {
 			executeBeq(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-		}	else {
+		} else {
 			System.out.println("Undefine opcode at instruction: ");
 			mIR.display(true);
 			throw new IllegalArgumentException("Undefined opcode");
 		}
-		return "running";
+	}
+
+	private void memoryOp() {
+		if (opCode == LW_OP) {
+			writeVal = mMemory[memoryTarget].getValue2sComp();
+		} else if (opCode == SW_OP) {
+			mMemory[memoryTarget].setValue2sComp(writeVal);
+		}
+	}
+
+	private void writeBack() {
+		if (registerTarget >= 0) {
+			mRegisters[registerTarget].setValue2sComp(writeVal);
+			registerTarget = -1;
+		}
 	}
 	
 	/**
@@ -320,8 +239,8 @@ public class Computer {
 			mIR.display(true);
 			throw new IllegalArgumentException("Invalid register");
 		}
-		mRegisters[tVal].setValue2sComp(ans);
-		
+		writeVal = ans;
+		registerTarget = tVal;
 	}
 	
 	/**
@@ -352,7 +271,8 @@ public class Computer {
 			mIR.display(true);
 			throw new IllegalArgumentException("Invalid register");
 		}
-		mRegisters[target.getValue()].setValue2sComp(ans);
+		writeVal = ans;
+		registerTarget = tVal;
 	}
 	
 	/**
@@ -400,14 +320,12 @@ public class Computer {
 	 */
 	private boolean checkOverflow(int val1, int val2) { 
 		boolean overflow = false;
-		if (val1 > 0 && val2 > 0) { 
-			if (val1 + val2 < 0) { 
+		if (val1 > 0 && val2 > 0) {
+			if (val1 + val2 < 0)
 				overflow = true;
-			} 
-		} else if (val1 < 0 && val2 < 0) { 
-			if (val1 + val2 > 0) { 
+		} else if (val1 < 0 && val2 < 0) {
+			if (val1 + val2 > 0)
 				overflow = true;
-			}
 		}
 		return overflow;
 	}
@@ -451,8 +369,9 @@ public class Computer {
 			mIR.display(true);
 			throw new IllegalArgumentException("Memory address exceeds limit");
 		}
-		
 		int register = rT.getValue();
+		registerTarget = register;
+		memoryTarget = addrIndex;
 		mRegisters[register].setValue2sComp(mMemory[addrIndex].getValue2sComp());
 	}
 	
@@ -483,8 +402,9 @@ public class Computer {
 			mIR.display(true);
 			throw new IllegalArgumentException("Memory address exceeds limit");
 		}
-		
-		mMemory[addr].setValue2sComp(mRegisters[rT.getValue()].getValue2sComp());	
+
+		writeVal = mRegisters[rT.getValue()].getValue2sComp();
+		memoryTarget = addr;
 	}
 	
 	/**
@@ -546,5 +466,81 @@ public class Computer {
 		}
 		System.out.println();
 
+	}
+
+	/**
+	 * Gets all current data stored in all registers
+	 * @return array of data in the registers
+	 */
+	public BitString[] getRegisterContents() {
+		return mRegisters;
+	}
+
+	/**
+	 * Testing method. Returns the contents of the desired register
+	 * @param n the register number
+	 * @return the contents of the register
+	 */
+	public int getRegisterContents(int n) {
+		return mRegisters[n].getValue2sComp();
+	}
+
+	/**
+	 * Testing method. Sets the content of the specified register to the given value
+	 * @param value the value
+	 * @param register the register to be modified
+	 */
+	public void setRegisterContents(int value, int register) {
+		mRegisters[register].setValue2sComp(value);
+	}
+
+	/**
+	 * Gets all current data stored in memory
+	 * @return array of data in memory
+	 */
+	public BitString[] getMemoryContents() {
+		return mMemory;
+	}
+
+	/**
+	 * Testing method. Gets the content at the specified memory address.
+	 * @param n the memory address.
+	 * @return the stored value
+	 */
+	public int getMemoryContents(int n) {
+		return mMemory[n].getValue2sComp();
+	}
+
+	/**
+	 * Testing method. Sets the value of the specified memory address.
+	 * @param val the value to be stored
+	 * @param addr the memory address.
+	 */
+	public void setMemoryContents(int val, int addr) {
+		mMemory[addr].setValue2sComp(val);
+	}
+
+	/**
+	 * Testing method. Returns the PC
+	 * @return a copy of the PC BitString
+	 */
+	public BitString getPC() {
+		return mPC.copy();
+	}
+
+	/**
+	 * Testing method. Returns the IR
+	 * @return a copy of the IR BitString
+	 */
+	public BitString getIR() {
+		return mIR.copy();
+	}
+
+	/**
+	 * Testing method. Returns the array of instructions.
+	 * @return the BitString array containing the instructions
+	 */
+	public BitString[] getInstructions() {
+		return mInstructions.clone();
 	}
 }
