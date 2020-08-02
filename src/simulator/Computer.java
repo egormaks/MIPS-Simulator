@@ -1,4 +1,7 @@
 package simulator;
+
+import java.util.Stack;
+
 /**
  * Computer class comprises of memory, registers, and
  * can executeProgram instructions based on PC and IR
@@ -45,21 +48,42 @@ public class Computer {
 	/** The PC, or the current instruction addr. */
 	private BitString mPC;
 	/** The instruction located at the PC. */
-	private BitString mIR;
+	private static final int mIR = 4;
 	/** Stores the current instruction opcode. Redundant but necessary for simulation
 	 * accuracy.
 	 */
-	private int opCode;
+	private BitString[] ifIdPipeline;
+	private BitString[] idExPipeline;
+	private BitString[] exMemPipeline;
+	private BitString[] memWbPipeline;
+	private static final int opCode = 0;
 	/** Stores the register that will be written to for pipeline. */
-	private int registerTarget = -1;
+	private static final int registerTarget = 1;
 	/** Stores the memory location that will be written to for pipeline. */
-	private int memoryTarget;
+	private static final int memoryTarget = 2;
 	/** Stores the value to be written, used for pipeline. */
-	private int writeVal;
+	private static final int writeVal = 3;
+	private static final int IF = 1;
+	private static final int ID = 2;
+	private static final int EX = 3;
+	private static final int MEM = 4;
+	private static final int WB = 5;
+	private Stack<Integer> pipelineOrder;
 	/**
 	 * Default constructor for Computer. Initializes all values to 0.
 	 */
 	public Computer() {
+		ifIdPipeline = new BitString[5];
+		idExPipeline = new BitString[5];
+		exMemPipeline = new BitString[5];
+		memWbPipeline = new BitString[5];
+		for (int i = 0; i < 5; i++) {
+			ifIdPipeline[i] = new BitString();
+			idExPipeline[i] = new BitString();
+			exMemPipeline[i] = new BitString();
+			memWbPipeline[i] = new BitString();
+		}
+		this.pipelineOrder = new Stack<>();
 		resetProgram();
 	}
 	 
@@ -89,8 +113,6 @@ public class Computer {
         int i;
         mPC = new BitString();
         mPC.setValue(0);
-        mIR = new BitString();
-        mIR.setValue(0);
         mRegisters = new BitString[MAX_REGISTERS];
         for (i = 0; i < MAX_REGISTERS; i++) {
             mRegisters[i] = new BitString();
@@ -117,7 +139,7 @@ public class Computer {
 	public void executeProgram() {
 		String operating = "";
 		while (operating != null) {
-			operating = increment();
+			operating = increment() ;
 		}
 	}
 	
@@ -127,77 +149,103 @@ public class Computer {
 	 * @return null when all instructions are executed, otherwise a generic placeholder string
 	 */
 	public String increment() {
-		// IF stage
-		instructionFetch();
-		if (mIR.getValue() == 0)
-			return null;
-		// ID stage
-		instructionDecode();
-		// EX stage
-		execute();
-		// MEM stage
-		memoryOp();
-		// WB stage
-		writeBack();
+		for (int i = 0; i < 5; i++) {
+			if (pipelineOrder.isEmpty() && mPC.getValue() == 0)
+				pipelineOrder.push(1);
+			int largest = pipelineOrder.peek();
+			int smallest = pipelineOrder.peek();
+			while (!pipelineOrder.isEmpty()) {
+				int currentOp = pipelineOrder.pop();
+				smallest = Math.min(smallest, currentOp);
+				if (currentOp == IF) {
+					instructionFetch();
+				} else if (currentOp == ID) {
+					instructionDecode();
+				} else if (currentOp == EX) {
+					execute();
+				} else if (currentOp == MEM) {
+					memoryOp();
+				} else if (currentOp == WB) {
+					writeBack();
+				}
+			}
+			if (mInstructions[mPC.getValue() / 4].getValue() != 0) {
+				smallest = 1;
+			} else
+				smallest++;
+			if (largest < 5)
+				largest++;
+			for (int j = smallest; j <= largest; j++) {
+				pipelineOrder.add(j);
+			}
+			if (pipelineOrder.isEmpty())
+				return null;
+		}
 		return "running";
 	}
 
 	private void instructionFetch() {
-		mIR = mInstructions[mPC.getValue() / 4];
+		ifIdPipeline[mIR].setValue(mInstructions[mPC.getValue() / 4].getValue());
 		mPC.setValue(mPC.getValue() + 4);
 	}
 
 	private void instructionDecode() {
-		BitString opCodeStr = mIR.getOpCode();
-		opCode = opCodeStr.getValue();
+		BitString opCodeStr = ifIdPipeline[mIR].getOpCode();
+		idExPipeline[opCode] = opCodeStr;
+		idExPipeline[mIR].setValue(ifIdPipeline[mIR].getValue());
 	}
 
 	private void execute() {
-		if (opCode == ADD_AND_JR_OP) {
-			int func = mIR.getFunct().getValue();
+		if (idExPipeline[opCode].getValue() == ADD_AND_JR_OP) {
+			int func = idExPipeline[mIR].getFunct().getValue();
 			if (func == ADD_FUNC) {
 				executeAdd(false);
 			} else if (func == AND_FUNC) {
 				executeAnd(false);
 			} else if (func == JR_FUNC) {
-				executeRegJump(mIR.getRs());
+				executeRegJump(idExPipeline[mIR].getRs());
 			} else {
 				System.out.println("Undefine function at instruction: ");
-				mIR.display(true);
+				idExPipeline[mIR].display(true);
 				throw new IllegalArgumentException("Undefined function");
 
 			}
-		} else if (opCode == ADDI_OP) {
+		} else if (idExPipeline[opCode].getValue() == ADDI_OP) {
 			executeAdd(true);
-		} else if (opCode == ANDI_OP) {
+		} else if (idExPipeline[opCode].getValue() == ANDI_OP) {
 			executeAnd(true);
-		} else if (opCode == LW_OP) {
-			executeLoadWord(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-		} else if (opCode == SW_OP) {
-			executeStoreWord(mIR.getRs(), mIR.getRt(), mIR.getCnst());
-		} else if (opCode == J_OP) {
-			executeJump(mIR.getPseudoAddr());
-		} else if (opCode == BEQ_OP) {
-			executeBeq(mIR.getRs(), mIR.getRt(), mIR.getCnst());
+		} else if (idExPipeline[opCode].getValue() == LW_OP) {
+			executeLoadWord(idExPipeline[mIR].getRs(), idExPipeline[mIR].getRt(), idExPipeline[mIR].getCnst());
+		} else if (idExPipeline[opCode].getValue() == SW_OP) {
+			executeStoreWord(idExPipeline[mIR].getRs(), idExPipeline[mIR].getRt(), idExPipeline[mIR].getCnst());
+		} else if (idExPipeline[opCode].getValue() == J_OP) {
+			executeJump(idExPipeline[mIR].getPseudoAddr());
+		} else if (idExPipeline[opCode].getValue() == BEQ_OP) {
+			executeBeq(idExPipeline[mIR].getRs(), idExPipeline[mIR].getRt(), idExPipeline[mIR].getCnst());
 		} else {
 			System.out.println("Undefine opcode at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Undefined opcode");
 		}
 	}
 
 	private void memoryOp() {
 		if (opCode == LW_OP) {
-			writeVal = mMemory[memoryTarget].getValue2sComp();
+			memWbPipeline[writeVal].setValue2sComp(mMemory[exMemPipeline[memoryTarget].getValue()].getValue2sComp());
+			memWbPipeline[registerTarget].setValue(exMemPipeline[registerTarget].getValue());
 		} else if (opCode == SW_OP) {
-			mMemory[memoryTarget].setValue2sComp(writeVal);
+			mMemory[exMemPipeline[memoryTarget].getValue()].setValue2sComp(exMemPipeline[writeVal].getValue2sComp());
+		} else {
+			memWbPipeline[writeVal].setValue2sComp(exMemPipeline[writeVal].getValue2sComp());
+			memWbPipeline[registerTarget].setValue2sComp(exMemPipeline[registerTarget].getValue2sComp());
 		}
 	}
 
 	private void writeBack() {
-		if (registerTarget >= 0) {
-			mRegisters[registerTarget].setValue2sComp(writeVal);
-			registerTarget = -1;
+		if (memWbPipeline[registerTarget].getValue() >= 0) {
+			mRegisters[memWbPipeline[registerTarget].getValue()]
+					.setValue2sComp(memWbPipeline[writeVal].getValue2sComp());
+			ifIdPipeline[registerTarget].setValue2sComp(-1);
 		}
 	}
 	
@@ -208,27 +256,27 @@ public class Computer {
 	 * @throws IAG if an overflow exception occurs or the target register is $zero
 	 */
 	private void executeAdd(boolean imm) {
-		BitString rS = mIR.getRs();
+		BitString rS = idExPipeline[mIR].getRs();
 		BitString target;
 		int ans;
 		int rs = rS.getValue();
 		int rsVal = mRegisters[rs].getValue2sComp();
 		if (imm) {
-			target = mIR.getRt();
-			int cnst = mIR.getCnst().getValue2sComp();
+			target = idExPipeline[mIR].getRt();
+			int cnst = idExPipeline[mIR].getCnst().getValue2sComp();
 			if (checkOverflow(cnst, rsVal)) { 
 				System.out.println("Overflow exception: ");
-				mIR.display(true);
+				idExPipeline[mIR].display(true);
 				throw new IllegalArgumentException("Overflow");
 			}
 			ans = rsVal + cnst;
 		} else {
-			target = mIR.getRd();
-			int rt = mIR.getRt().getValue();
+			target = idExPipeline[mIR].getRd();
+			int rt = idExPipeline[mIR].getRt().getValue();
 			int rtVal = mRegisters[rt].getValue2sComp();
 			if (checkOverflow(rsVal, rtVal)) { 
 				System.out.println("Overflow exception: ");
-				mIR.display(true);
+				idExPipeline[mIR].display(true);
 				throw new IllegalArgumentException("Overflow");
 			}
 			ans = rsVal + rtVal;
@@ -236,11 +284,11 @@ public class Computer {
 		int tVal = target.getValue();
 		if (tVal == 0) { 
 			System.out.println("Attempt to write to $zero at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Invalid register");
 		}
-		writeVal = ans;
-		registerTarget = tVal;
+		exMemPipeline[writeVal].setValue2sComp(ans);
+		exMemPipeline[registerTarget].setValue(tVal);
 	}
 	
 	/**
@@ -250,29 +298,29 @@ public class Computer {
 	 * @throws IAG if the target register is $zero
 	 */
 	private void executeAnd(boolean imm) { 
-		BitString rS = mIR.getRs();
+		BitString rS = idExPipeline[mIR].getRs();
 		BitString target;
 		int ans;
 		int rs = rS.getValue();
 		int rsVal = mRegisters[rs].getValue2sComp();
 		if (imm) {
-			target = mIR.getRt();
-			int cnst = mIR.getCnst().getValue2sComp();
+			target = idExPipeline[mIR].getRt();
+			int cnst = idExPipeline[mIR].getCnst().getValue2sComp();
 			ans = rsVal & cnst;
 		} else {
-			target = mIR.getRd();
-			int rt = mIR.getRt().getValue();
+			target = idExPipeline[mIR].getRd();
+			int rt = idExPipeline[mIR].getRt().getValue();
 			int rtVal = mRegisters[rt].getValue2sComp();
 			ans = rsVal & rtVal;
 		}
 		int tVal = target.getValue();
 		if (tVal <= 0) { 
 			System.out.println("Attempt to write to $zero at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Invalid register");
 		}
-		writeVal = ans;
-		registerTarget = tVal;
+		exMemPipeline[writeVal].setValue2sComp(ans);
+		exMemPipeline[registerTarget].setValue(tVal);
 	}
 	
 	/**
@@ -290,7 +338,7 @@ public class Computer {
 		newPC = newPC.append(z);
 		if (newPC.getValue() >= MAX_INSTRUCTIONS) { 
 			System.out.println("Out of bounds jump target at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Out of bounds jump target at instruction");
 		}
 		mPC.setValue(newPC.getValue());;
@@ -305,7 +353,7 @@ public class Computer {
 		BitString newAddr = mRegisters[register.getValue()];
 		if (newAddr.getValue2sComp() % 4 != 0) { 
 			System.out.println("Address error exception at instruction (not naturally aligned): ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Address error exception");
 		}
 		mPC.setValue(newAddr.getValue());
@@ -342,7 +390,7 @@ public class Computer {
 	private void executeLoadWord(BitString rS, BitString rT, BitString offset) { 
 		if (rT.getValue() == 0) { 
 			System.out.println("Attempting to write to $zero at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Cannot write to 0 register @LW");
 		}
 		BitString addr1 = mRegisters[rS.getValue()];
@@ -351,7 +399,7 @@ public class Computer {
 		int addr = addr1.getValue2sComp();
 		if (checkOverflow(off, addr)) { 
 			System.out.println("Overflow exception: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Overflow");
 		}
 		int sum = off + addr;
@@ -361,18 +409,17 @@ public class Computer {
 				
 		if (addrIndex % 4 != 0) { 
 			System.out.println("Address error exception at instruction (not naturally aligned): ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Address error exception");
 		}
 		if (addrIndex >= MAX_MEMORY || addrIndex < 0) { 
 			System.out.println("Memory address exceeds limit at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Memory address exceeds limit");
 		}
 		int register = rT.getValue();
-		registerTarget = register;
-		memoryTarget = addrIndex;
-		mRegisters[register].setValue2sComp(mMemory[addrIndex].getValue2sComp());
+		exMemPipeline[registerTarget].setValue(register);
+		exMemPipeline[memoryTarget].setValue(addrIndex);
 	}
 	
 	/**
@@ -388,23 +435,23 @@ public class Computer {
 		int off = offset.getValue2sComp();
 		if (checkOverflow(off, regVal)) { 
 			System.out.println("Overflow exception: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Overflow");
 		}
 		int addr = regVal + off;
 		if (addr % 4 != 0) { 
 			System.out.println("Address error exception at instruction (not naturally aligned): ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Address error exception");
 		}
 		if (addr >= MAX_MEMORY || addr < 0) { 
 			System.out.println("Memory address exceeds limit at instruction: ");
-			mIR.display(true);
+			idExPipeline[mIR].display(true);
 			throw new IllegalArgumentException("Memory address exceeds limit");
 		}
 
-		writeVal = mRegisters[rT.getValue()].getValue2sComp();
-		memoryTarget = addr;
+		exMemPipeline[writeVal].setValue2sComp(mRegisters[rT.getValue()].getValue2sComp());
+		exMemPipeline[memoryTarget].setValue(addr);
 	}
 	
 	/**
@@ -424,7 +471,7 @@ public class Computer {
 			int newAddr = mPC.getValue() + 4 * val;
 			if (newAddr >= MAX_INSTRUCTIONS || newAddr <= 0) { 
 				System.out.println("Out of bounds register at instruction: ");
-				mIR.display(true);
+				idExPipeline[mIR].display(true);
 				throw new IllegalArgumentException("Out of bounds register");
 			}
 			mPC.setValue(newAddr);
@@ -533,7 +580,7 @@ public class Computer {
 	 * @return a copy of the IR BitString
 	 */
 	public BitString getIR() {
-		return mIR.copy();
+		return idExPipeline[mIR].copy();
 	}
 
 	/**
