@@ -312,28 +312,35 @@ public class Computer {
 	 */
 	private void executeAdd(boolean imm) {
 		BitString rS = idExPipeline[M_IR].getRs();
+		int val;
+		if (rS.equals(exMemPipeline[REGISTER_TARGET]))
+			val = exMemPipeline[WRITE_VAL].getValue2sComp();
+		else
+			val = mRegisters[rS.getValue()].getValue2sComp();
+
 		BitString target;
 		int ans;
-		int rs = rS.getValue();
-		int rsVal = mRegisters[rs].getValue2sComp();
 		if (imm) {
 			target = idExPipeline[M_IR].getRt();
 			int cnst = idExPipeline[M_IR].getCnst().getValue2sComp();
-			if (checkOverflow(cnst, rsVal)) { 
+			if (checkOverflow(cnst, val)) {
 				System.out.println("Overflow exception: ");
 				idExPipeline[M_IR].display(true);
 				throw new IllegalArgumentException("Overflow exception");
 			}
-			ans = rsVal + cnst;
+			ans = val + cnst;
 		} else {
+			int rtVal;
+			if (exMemPipeline[REGISTER_TARGET].equals(idExPipeline[M_IR].getRt()))
+				rtVal = exMemPipeline[WRITE_VAL].getValue2sComp();
+			else
+				rtVal = mRegisters[idExPipeline[M_IR].getRt().getValue()].getValue2sComp();
 			target = idExPipeline[M_IR].getRd();
-			int rt = idExPipeline[M_IR].getRt().getValue();
-			int rtVal = mRegisters[rt].getValue2sComp();
-			if (checkOverflow(rsVal, rtVal)) { 
+			if (checkOverflow(val, rtVal)) {
 				idExPipeline[M_IR].display(true);
 				throw new IllegalArgumentException("Overflow exception");
 			}
-			ans = rsVal + rtVal;
+			ans = val + rtVal;
 		}
 		int tVal = target.getValue();
 		if (tVal == 0) { 
@@ -350,21 +357,28 @@ public class Computer {
 	 * @param imm if true, executes ANDI, otherwise executes AND
 	 * @throws IAG if the target register is $zero
 	 */
-	private void executeAnd(boolean imm) { 
+	private void executeAnd(boolean imm) {
 		BitString rS = idExPipeline[M_IR].getRs();
+		int val;
+		if (rS.equals(exMemPipeline[REGISTER_TARGET]))
+			val = exMemPipeline[WRITE_VAL].getValue2sComp();
+		else
+			val = mRegisters[rS.getValue()].getValue2sComp();
+
 		BitString target;
 		int ans;
-		int rs = rS.getValue();
-		int rsVal = mRegisters[rs].getValue2sComp();
 		if (imm) {
 			target = idExPipeline[M_IR].getRt();
 			int cnst = idExPipeline[M_IR].getCnst().getValue2sComp();
-			ans = rsVal & cnst;
+			ans = val & cnst;
 		} else {
+			int rtVal;
+			if (exMemPipeline[REGISTER_TARGET].equals(idExPipeline[M_IR].getRt()))
+				rtVal = exMemPipeline[WRITE_VAL].getValue2sComp();
+			else
+				rtVal = mRegisters[idExPipeline[M_IR].getRt().getValue()].getValue2sComp();
 			target = idExPipeline[M_IR].getRd();
-			int rt = idExPipeline[M_IR].getRt().getValue();
-			int rtVal = mRegisters[rt].getValue2sComp();
-			ans = rsVal & rtVal;
+			ans = val & rtVal;
 		}
 		int tVal = target.getValue();
 		if (tVal <= 0) { 
@@ -392,7 +406,7 @@ public class Computer {
 			idExPipeline[M_IR].display(true);
 			throw new IllegalArgumentException("Out of bounds jump target at instruction");
 		}
-		mPC.setValue(newPC.getValue());;
+		mPC.setValue(newPC.getValue());
 	}
 	
 	/**
@@ -400,9 +414,13 @@ public class Computer {
 	 * @param register
 	 * @throws IAG when the stored address is not a multiple of 4.
 	 */
-	private void executeRegJump(BitString register) { 
-		BitString newAddr = mRegisters[register.getValue()];
-		if (newAddr.getValue2sComp() % 4 != 0) { 
+	private void executeRegJump(BitString register) {
+		BitString newAddr = new BitString();
+		if (exMemPipeline[REGISTER_TARGET].equals(register.getValue()))
+			newAddr.setValue(exMemPipeline[WRITE_VAL].getValue());
+		else
+			newAddr.setValue(register.getValue());
+		if (newAddr.getValue2sComp() % 4 != 0) {
 			idExPipeline[M_IR].display(true);
 			throw new IllegalArgumentException("Address error exception, not aligned.");
 		}
@@ -446,13 +464,18 @@ public class Computer {
 	 * @throws IAG when trying to write to $zero, an overflow happens, the address is not a multiple of 4, or the memory address 
 	 * is less than 0 or greater than the amount of memory available
 	 */
-	private void executeLoadWord(BitString rS, BitString rT, BitString offset) { 
+	private void executeLoadWord(BitString rS, BitString rT, BitString offset) {
 		if (rT.getValue() == 0) { 
 			System.out.println("Attempting to write to $zero at instruction: ");
 			idExPipeline[M_IR].display(true);
 			throw new IllegalArgumentException("Cannot write to 0 register @LW");
 		}
-		BitString addr1 = mRegisters[rS.getValue()];
+		BitString addr1 = new BitString();
+		if (rS.equals(exMemPipeline[REGISTER_TARGET]))
+			addr1.setValue(exMemPipeline[WRITE_VAL].getValue());
+		else
+			addr1 = mRegisters[rS.getValue()];
+
 		BitString combined = new BitString();
 		int off = offset.getValue2sComp();
 		int addr = addr1.getValue2sComp();
@@ -479,7 +502,12 @@ public class Computer {
 	 * larger than the amount of memory available
 	 */
 	private void executeStoreWord(BitString rS, BitString rT, BitString offset) {
-		int regVal = mRegisters[rS.getValue()].getValue2sComp();
+		int regVal;
+		if (rS.equals(exMemPipeline[REGISTER_TARGET]))
+			regVal = exMemPipeline[WRITE_VAL].getValue2sComp();
+		else
+			regVal = mRegisters[rS.getValue()].getValue2sComp();
+
 		int off = offset.getValue2sComp();
 		if (checkOverflow(off, regVal)) { 
 			idExPipeline[M_IR].display(true);
