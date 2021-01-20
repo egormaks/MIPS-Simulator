@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import simulator.BitString;
 import simulator.Computer;
@@ -150,12 +149,12 @@ public class Driver extends JFrame  {
 				}
 			}
 		});
-		JButton step = new JButton("Step");
+		JButton step = new JButton("Step (1 Cycle)");
 		step.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					String str = computer.increment();
+					String str = computer.incrementFiveCycles();
 					if (str == null) {
 						JOptionPane.showMessageDialog(Driver.this,
 								"Program finished execution.");
@@ -172,7 +171,7 @@ public class Driver extends JFrame  {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					computer.execute();
+					computer.executeProgram();
 					JOptionPane.showMessageDialog(Driver.this,
 								"Program finished execution.");
 					updateMemoryTable();

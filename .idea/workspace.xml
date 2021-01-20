@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="11b4aa4a-44cc-4de7-8f7a-c61ca1eccb51" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/gui/Driver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/simulator/BitString.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/simulator/BitString.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/simulator/Computer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MIPS-Simulator/simulator/Computer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MIPS-Simulator/simulator/Simulator.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Driver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulator/BitString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulator/BitString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulator/Simulator.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,16 +22,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DefaultGradleProjectSettings">
-    <option name="testRunner" value="GRADLE" />
-    <option name="delegatedBuild" value="true" />
+    <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gui/Driver.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1972">
-              <caret line="124" column="59" lean-forward="true" selection-start-line="124" selection-start-column="59" selection-end-line="124" selection-end-column="59" />
+            <state relative-caret-position="2332">
+              <caret line="168" column="41" lean-forward="true" selection-start-line="168" selection-start-column="41" selection-end-line="168" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -28,8 +38,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/simulator/BitString.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="741">
-              <caret line="173" column="9" selection-start-line="172" selection-start-column="80" selection-end-line="173" selection-end-column="9" />
+            <state relative-caret-position="1468">
+              <caret line="311" column="1" lean-forward="true" selection-start-line="311" selection-start-column="1" selection-end-line="311" selection-end-column="1" />
               <folding>
                 <element signature="e#6118#6119#0" expanded="true" />
                 <element signature="e#6148#6149#0" expanded="true" />
@@ -59,21 +69,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/simulator/Computer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="60" column="28" selection-start-line="60" selection-start-column="28" selection-end-line="60" selection-end-column="28" />
+            <state relative-caret-position="47">
+              <caret line="408" column="39" lean-forward="true" selection-start-line="408" selection-start-column="39" selection-end-line="408" selection-end-column="39" />
               <folding>
-                <element signature="e#1715#1716#0" expanded="true" />
-                <element signature="e#1736#1737#0" expanded="true" />
+                <element signature="e#5845#5846#0" expanded="true" />
+                <element signature="e#5893#5894#0" expanded="true" />
+                <element signature="e#18990#18991#0" expanded="true" />
+                <element signature="e#19054#19055#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/simulator/Simulator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="27" column="76" selection-start-line="27" selection-start-column="76" selection-end-line="27" selection-end-column="76" />
             </state>
           </provider>
         </entry>
@@ -87,16 +90,18 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/gui/Driver.java" />
+        <option value="$PROJECT_DIR$/src/simulator/Simulator.java" />
+        <option value="$PROJECT_DIR$/src/gui/Driver.java" />
         <option value="$PROJECT_DIR$/src/simulator/BitString.java" />
         <option value="$PROJECT_DIR$/src/simulator/Computer.java" />
-        <option value="$PROJECT_DIR$/src/gui/Driver.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="974" />
-    <option name="height" value="1160" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="976" />
+    <option name="height" value="1176" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -206,6 +211,7 @@
       <workItem from="1596136684792" duration="9238000" />
       <workItem from="1596174101392" duration="41000" />
       <workItem from="1596231931541" duration="1041000" />
+      <workItem from="1596406146906" duration="6974000" />
     </task>
     <task id="LOCAL-00001" summary="Init Commit:&#10;&#10;- Moved project onto GitHub and began work on interactive GUI (previously was console based)&#10;&#10;TODO:&#10;1) Implement GUI. User should be able to:&#10;     a) Input machine code for program&#10;     b) Compile machine code&#10;     c) Execute machine code (step by step or run-through)&#10;     d) Visualize register and memory contents thru execution&#10;2) Implement pipe-lining mechanism.&#10;3) Implement compile time and run time exception handling for MIPS&#10;   (not Java's exceptions, but the exceptions present in hardware).">
       <created>1596136971485</created>
@@ -228,17 +234,45 @@
       <option name="project" value="LOCAL" />
       <updated>1596144928658</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Pipelining Commit #1&#10;&#10;Modularized the instruction stages so they are completely separated and &#10;communicate data via private fields. Should make integrating each&#10;stage into a thread easier.&#10;&#10;TODO:&#10;- Implement threads to house each stage">
+      <created>1596316541442</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1596316541442</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Pipelining Commit #2&#10;&#10;Implemented pipelining. Each stage now sends data to an intermediate &#10;pipeline preceding the next stage. This allows for different operations&#10;to occur simultaneously. Now, using a stack, different stages from &#10;different operations are interleaved. For example instead of:&#10;(A1)(B1)(C1)(D1)(E1)(A2)(B2)(C2)(D2)(E2) [10 cycles total], it will be:&#10;(A1)(B1, A2)(C1, B2)(D1, C2)(E1, D2)(E2) [5 cycles total].&#10;&#10;TODO:&#10;- implement conflict resolution (what if two concurrent operations &#10;try to access the same resources?)">
+      <created>1596337378163</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1596337378163</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Pipelining Commit #3:&#10;&#10;In process of implementing pipeline mechanism. Backup for if something goes wrong">
+      <created>1596425264685</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1596425264685</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Pipelining Commit #4:&#10;&#10;Implemented a resolution for an ID/EX conflict (when the target of a reg&#10;write of a preceding instruction is the same as one of the current &#10;instruction's source registers. (Example: instruction 1 writes 0x1 to&#10;register $t0, instruction 2 writes $t0 + $t0 into $t. W/o resolution,&#10;after 2 finishes, $t0 will store 0. With resolution, it will store 0x2))&#10;&#10;TODO:&#10;- implement conflict resolution for ID/MEM conflicts (when a reg is &#10;written to in the MEM phase, requires a delay that allows for the reg&#10;to be updated before continuing the current instruction.)">
+      <created>1596426908138</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1596426908138</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10320000" />
+    <option name="totallyTimeSpent" value="38310000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="974" height="1160" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.25054705" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.3411043" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -246,9 +280,9 @@
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.33203506" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32978722" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32885906" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.641419" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -256,8 +290,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32981783" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32885906" />
+      <window_info anchor="bottom" id="Event Log" order="12" weight="0.32981783" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -276,7 +310,25 @@
     <MESSAGE value="Init Commit:&#10;&#10;- Moved project onto GitHub and began work on interactive GUI (previously was console based)&#10;&#10;TODO:&#10;1) Implement GUI. User should be able to:&#10;     a) Input machine code for program&#10;     b) Compile machine code&#10;     c) Execute machine code (step by step or run-through)&#10;     d) Visualize register and memory contents thru execution&#10;2) Implement pipe-lining mechanism.&#10;3) Implement compile time and run time exception handling for MIPS&#10;   (not Java's exceptions, but the exceptions present in hardware)." />
     <MESSAGE value="Commit 2:&#10;&#10;Tidied up GUI.&#10;&#10;TODO:&#10;1) Implement GUI&#10;     a) Implement simulator into GUI w/ listeners&#10;2) Implement pipelining" />
     <MESSAGE value="Commit 23:&#10;&#10;Implemented functionality of the simulator into the GUI.&#10;&#10;BUGS:&#10; - Incorrect hex write? &#10;&#10;TODO:&#10; 1) Bugfixing&#10; 2) Implement pipelining.&#10; 3) Implement new operations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit 23:&#10;&#10;Implemented functionality of the simulator into the GUI.&#10;&#10;BUGS:&#10; - Incorrect hex write? &#10;&#10;TODO:&#10; 1) Bugfixing&#10; 2) Implement pipelining.&#10; 3) Implement new operations" />
+    <MESSAGE value="Pipelining Commit #1&#10;&#10;Modularized the instruction stages so they are completely separated and &#10;communicate data via private fields. Should make integrating each&#10;stage into a thread easier.&#10;&#10;TODO:&#10;- Implement threads to house each stage" />
+    <MESSAGE value="Pipelining Commit #2&#10;&#10;Implemented pipelining. Each stage now sends data to an intermediate &#10;pipeline preceding the next stage. This allows for different operations&#10;to occur simultaneously. Now, using a stack, different stages from &#10;different operations are interleaved. For example instead of:&#10;(A1)(B1)(C1)(D1)(E1)(A2)(B2)(C2)(D2)(E2) [10 cycles total], it will be:&#10;(A1)(B1, A2)(C1, B2)(D1, C2)(E1, D2)(E2) [5 cycles total].&#10;&#10;TODO:&#10;- implement conflict resolution (what if two concurrent operations &#10;try to access the same resources?)" />
+    <MESSAGE value="Pipelining Commit #3:&#10;&#10;In process of implementing pipeline mechanism. Backup for if something goes wrong" />
+    <MESSAGE value="Pipelining Commit #4:&#10;&#10;Implemented a resolution for an ID/EX conflict (when the target of a reg&#10;write of a preceding instruction is the same as one of the current &#10;instruction's source registers. (Example: instruction 1 writes 0x1 to&#10;register $t0, instruction 2 writes $t0 + $t0 into $t. W/o resolution,&#10;after 2 finishes, $t0 will store 0. With resolution, it will store 0x2))&#10;&#10;TODO:&#10;- implement conflict resolution for ID/MEM conflicts (when a reg is &#10;written to in the MEM phase, requires a delay that allows for the reg&#10;to be updated before continuing the current instruction.)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pipelining Commit #4:&#10;&#10;Implemented a resolution for an ID/EX conflict (when the target of a reg&#10;write of a preceding instruction is the same as one of the current &#10;instruction's source registers. (Example: instruction 1 writes 0x1 to&#10;register $t0, instruction 2 writes $t0 + $t0 into $t. W/o resolution,&#10;after 2 finishes, $t0 will store 0. With resolution, it will store 0x2))&#10;&#10;TODO:&#10;- implement conflict resolution for ID/MEM conflicts (when a reg is &#10;written to in the MEM phase, requires a delay that allows for the reg&#10;to be updated before continuing the current instruction.)" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/simulator/Computer.java</url>
+          <line>312</line>
+          <properties class="simulator.Computer" method="executeAdd">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="jar://C:/Program Files/Java/jdk-14/lib/src.zip!/java.desktop/javax/swing/JTable.java">
@@ -297,10 +349,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-14/lib/src.zip!/java.desktop/java/awt/Container.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="4547" selection-start-line="4547" selection-end-line="4547" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/simulator/Simulator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gui/Driver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2332">
+          <caret line="168" column="41" lean-forward="true" selection-start-line="168" selection-start-column="41" selection-end-line="168" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/simulator/BitString.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="741">
-          <caret line="173" column="9" selection-start-line="172" selection-start-column="80" selection-end-line="173" selection-end-column="9" />
+        <state relative-caret-position="1468">
+          <caret line="311" column="1" lean-forward="true" selection-start-line="311" selection-start-column="1" selection-end-line="311" selection-end-column="1" />
           <folding>
             <element signature="e#6118#6119#0" expanded="true" />
             <element signature="e#6148#6149#0" expanded="true" />
@@ -326,27 +399,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/simulator/Simulator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="76" selection-start-line="27" selection-start-column="76" selection-end-line="27" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gui/Driver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1972">
-          <caret line="124" column="59" lean-forward="true" selection-start-line="124" selection-start-column="59" selection-end-line="124" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/simulator/Computer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="60" column="28" selection-start-line="60" selection-start-column="28" selection-end-line="60" selection-end-column="28" />
+        <state relative-caret-position="47">
+          <caret line="408" column="39" lean-forward="true" selection-start-line="408" selection-start-column="39" selection-end-line="408" selection-end-column="39" />
           <folding>
-            <element signature="e#1715#1716#0" expanded="true" />
-            <element signature="e#1736#1737#0" expanded="true" />
+            <element signature="e#5845#5846#0" expanded="true" />
+            <element signature="e#5893#5894#0" expanded="true" />
+            <element signature="e#18990#18991#0" expanded="true" />
+            <element signature="e#19054#19055#0" expanded="true" />
           </folding>
         </state>
       </provider>
