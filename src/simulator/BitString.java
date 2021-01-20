@@ -293,4 +293,20 @@ public class BitString {
 		return mLength;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (char c : mBits)
+			sb.append(c);
+		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other.getClass() != this.getClass())
+			return false;
+		BitString str = (BitString) other;
+		return str.getValue() == this.getValue();
+	}
+
 }
